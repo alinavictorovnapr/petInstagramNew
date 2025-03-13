@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import MobileMenu from "@/app/components/MobileMenu";
+import MobileMenu from "./MobileMenu";
 import Image from "next/image";
 import {
   ClerkLoaded,
@@ -14,13 +14,13 @@ const Navbar = () => {
   return (
     <div className="h-24 flex items-center justify-between">
       <div className="md:hidden lg:block w-[20%]">
-        <Link href="/" className="font-bold text-xl logo-color">
+        <Link href="/public" className="font-bold text-xl logo-color">
           PetsInstagram
         </Link>
       </div>
       <div className="hidden md:flex w-[50%] text-sm items-center justify-between">
         <div className="flex gap-6 text-grey-600">
-          <Link href="/" className="flex gap-2 items-center">
+          <Link href="/public" className="flex gap-2 items-center">
             <Image
               src="/pet-home.png"
               alt="HomePage"
@@ -30,7 +30,7 @@ const Navbar = () => {
             />
             <span>Homepage</span>
           </Link>
-          <Link href="/" className="flex gap-2 items-center">
+          <Link href="/public" className="flex gap-2 items-center">
             <Image
               src="/footprint.png"
               alt="Friends"
@@ -41,7 +41,7 @@ const Navbar = () => {
 
             <span>Friends</span>
           </Link>
-          <Link href="/" className="flex gap-2 items-center">
+          <Link href="/public" className="flex gap-2 items-center">
             <Image
               src="/veterinary.png"
               alt="Stories"

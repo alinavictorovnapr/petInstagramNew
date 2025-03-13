@@ -28,11 +28,11 @@ const MobileMenu = () => {
       </div>
       {isOpen && (
         <div className="absolute left-0 top-24 w-full h-[calc(100-96px)] bg-white flex flex-col items-center justify-center gap-8 font-medium text-xl z-10">
-          <Link href="/">Home</Link>
-          <Link href="/">Cute Friends</Link>
-          <Link href="/">Groups</Link>
-          <Link href="/">Stories</Link>
-          <Link href="/">Login</Link>
+          <Link href="/public">Home</Link>
+          <Link href="/public">Cute Friends</Link>
+          <Link href="/public">Groups</Link>
+          <Link href="/public">Stories</Link>
+          <Link href="/public">Login</Link>
         </div>
       )}
     </div>

@@ -1,6 +1,27 @@
 import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
+import AddPostButton from "@/components/AddPostButton";
+import prisma from "@/lib/client";
 
 const AddPost = () => {
+  const { userId } = auth();
+
+  const testAction = async (formData: FormData) => {
+    "use server";
+    if (!userId) return;
+    const desc = formData.get("desc") as string;
+    try {
+      const res = await prisma.post.create({
+        data: {
+          userId: userId,
+          desc: desc,
+        },
+      });
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <div className="p-4 bg-white rounded-lg shadow-md flex gap-4 justify-between text-sm">
       {/*AVATAR*/}
@@ -15,12 +36,12 @@ const AddPost = () => {
       {/*POST*/}
       <div className="flex-1">
         {/*TEXT INPUT*/}
-        <div className="flex gap-4">
+        <form action={testAction} className="flex gap-4">
           <textarea
-            name=""
             placeholder="What's on your mind?"
             className="flex-1 bg-slate-100 rounded-lg p-2"
             id=""
+            name="desc"
           ></textarea>
           <Image
             src="/cat-emoji.png"
@@ -29,7 +50,8 @@ const AddPost = () => {
             height={20}
             className="w-6 h-5 cursor-pointer self-end"
           />
-        </div>
+          <AddPostButton />
+        </form>
 
         {/*POSTOPTIONS*/}
         <div className="flex items-center gap-4 mt-4 text-grey-400 flex-wrap">

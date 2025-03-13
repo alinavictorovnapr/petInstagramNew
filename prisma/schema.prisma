@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model block {
+  id                         Int      @id @default(autoincrement())
+  createdAt                  DateTime @default(now())
+  blockerId                  String
+  blockedId                  String
+  user_block_blockedIdTouser user     @relation("block_blockedIdTouser", fields: [blockedId], references: [id], onDelete: Cascade, map: "Block_blockedId_fkey")
+  user_block_blockerIdTouser user     @relation("block_blockerIdTouser", fields: [blockerId], references: [id], onDelete: Cascade, map: "Block_blockerId_fkey")
+
+  @@unique([blockerId, blockedId], map: "Block_blockerId_blockedId_key")
+  @@index([blockedId], map: "Block_blockedId_fkey")
+}
+
+model comment {
+  id        Int      @id @default(autoincrement())
+  desc      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  userId    String
+  postId    Int
+  post      post     @relation(fields: [postId], references: [id], onDelete: Cascade, map: "Comment_postId_fkey")
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Comment_userId_fkey")
+  like      like[]
+
+  @@index([postId], map: "Comment_postId_fkey")
+  @@index([userId], map: "Comment_userId_fkey")
+}
+
+model follower {
+  id                              Int      @id @default(autoincrement())
+  createdAt                       DateTime @default(now())
+  followerId                      String
+  followingId                     String
+  user_follower_followerIdTouser  user     @relation("follower_followerIdTouser", fields: [followerId], references: [id], onDelete: Cascade, map: "Follower_followerId_fkey")
+  user_follower_followingIdTouser user     @relation("follower_followingIdTouser", fields: [followingId], references: [id], onDelete: Cascade, map: "Follower_followingId_fkey")
+
+  @@index([followerId], map: "Follower_followerId_fkey")
+  @@index([followingId], map: "Follower_followingId_fkey")
+}
+
+model followrequest {
+  id                                  Int      @id @default(autoincrement())
+  createdAt                           DateTime @default(now())
+  senderId                            String
+  receiverId                          String
+  user_followrequest_receiverIdTouser user     @relation("followrequest_receiverIdTouser", fields: [receiverId], references: [id], onDelete: Cascade, map: "FollowRequest_receiverId_fkey")
+  user_followrequest_senderIdTouser   user     @relation("followrequest_senderIdTouser", fields: [senderId], references: [id], onDelete: Cascade, map: "FollowRequest_senderId_fkey")
+
+  @@unique([senderId, receiverId], map: "FollowRequest_senderId_receiverId_key")
+  @@index([receiverId], map: "FollowRequest_receiverId_fkey")
+}
+
+model like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    String
+  postId    Int?
+  commentId Int?
+  comment   comment? @relation(fields: [commentId], references: [id], onDelete: Cascade, map: "Like_commentId_fkey")
+  post      post?    @relation(fields: [postId], references: [id], onDelete: Cascade, map: "Like_postId_fkey")
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Like_userId_fkey")
+
+  @@index([commentId], map: "Like_commentId_fkey")
+  @@index([postId], map: "Like_postId_fkey")
+  @@index([userId], map: "Like_userId_fkey")
+}
+
+model post {
+  id        Int       @id @default(autoincrement())
+  desc      String
+  img       String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  userId    String
+  comment   comment[]
+  like      like[]
+  user      user      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Post_userId_fkey")
+
+  @@index([userId], map: "Post_userId_fkey")
+}
+
+model story {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  img       String
+  userId    String   @unique(map: "Story_userId_key")
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Story_userId_fkey")
+}
+
+model user {
+  id                                           String          @id
+  username                                     String          @unique(map: "User_username_key")
+  avatar                                       String?
+  cover                                        String?
+  name                                         String?
+  surname                                      String?
+  description                                  String?
+  city                                         String?
+  school                                       String?
+  work                                         String?
+  website                                      String?
+  createdAt                                    DateTime        @default(now())
+  block_block_blockedIdTouser                  block[]         @relation("block_blockedIdTouser")
+  block_block_blockerIdTouser                  block[]         @relation("block_blockerIdTouser")
+  comment                                      comment[]
+  follower_follower_followerIdTouser           follower[]      @relation("follower_followerIdTouser")
+  follower_follower_followingIdTouser          follower[]      @relation("follower_followingIdTouser")
+  followrequest_followrequest_receiverIdTouser followrequest[] @relation("followrequest_receiverIdTouser")
+  followrequest_followrequest_senderIdTouser   followrequest[] @relation("followrequest_senderIdTouser")
+  like                                         like[]
+  post                                         post[]
+  story                                        story?
+}
